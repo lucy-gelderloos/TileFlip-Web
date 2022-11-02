@@ -9,7 +9,7 @@ class Main extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = {difficulty: 2};
+        this.state = {difficulty: 4};
     }
 
     handleSelect(event) {
@@ -26,13 +26,13 @@ class Main extends React.Component {
                   <Form.Label>Choose difficulty level:</Form.Label>
                   <Form.Select onSubmit={this.handleSelect.bind(this)}>      
                     <option value="4">Easy</option>
-                    <option value="5">Medium</option>
+                    {/* <option value="5">Medium</option> */}
                     <option value="6">Hard</option>
                     </Form.Select>
                 </Form.Group>
                 <input type="submit" value="Submit" />
               </Form>
-              <TileBoard difficulty={this.props.difficulty} />
+              <TileBoard difficulty={this.state.difficulty} />
               <ScoreBoard />
             </main>
         )
