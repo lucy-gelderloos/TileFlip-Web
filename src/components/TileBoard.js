@@ -31,21 +31,27 @@ class TileBoard extends React.Component {
     }
 
     createTilesArray() {
-        let tilesArray = [], imagesArray = [], k = 0;
+        let tilesArray = [], k = 0;
         for(let i = 1; i <= Math.pow(this.difficulty,2) / 2; i++) {
-            imagesArray[k] = i;
+            tilesArray[k] = i;
             k++;
-            imagesArray[k] = i;
+            tilesArray[k] = i;
             k++;
         }
         // https://bost.ocks.org/mike/shuffle/
-        let len = imagesArray.length, j, t;
+        let len = tilesArray.length, j, t;
         while(len) {
             j = Math.floor(Math.random() * len--);
-            t = imagesArray[len];
-            imagesArray[len] = imagesArray[j];
-            imagesArray[j] = t;
+            t = tilesArray[len];
+            tilesArray[len] = tilesArray[j];
+            tilesArray[j] = t;
         }
+        
+        for(let i = 0; i < tilesArray.length; i++) {
+            let holdingVal = tilesArray[i];
+            tilesArray[i] = {_id: i, value: holdingVal};
+        }
+
         console.log(tilesArray);
         return tilesArray;
     }
@@ -55,7 +61,7 @@ class TileBoard extends React.Component {
         return(
             <div className="tileBoard">
                 <div>
-                    {this.tilesArray.map(el => <Tile key={this.tilesArray.indexOf(el)} tileValue={el} />)}
+                    {this.tilesArray.map(el => <Tile key={el._id} tileId={el._id} tileValue={el.value} />)}
                     <h2>Tileboard goes here</h2>
                 </div>
             </div>
