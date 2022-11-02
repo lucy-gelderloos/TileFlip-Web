@@ -61,8 +61,8 @@ class TileBoard extends React.Component {
         return(
             <div className="tileBoard">
                 <div>
-                    {this.tilesArray.map(el => <Tile key={el._id} tileId={el._id} tileValue={el.value} />)}
                     <h2>Tileboard goes here</h2>
+                    {this.tilesArray.map(el => <Tile key={el._id} tileId={el._id} tileValue={el.value} />)}
                 </div>
             </div>
         )

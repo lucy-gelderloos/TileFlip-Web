@@ -1,14 +1,11 @@
 import React from "react";
 
-// import tile1 from '../img/tile1.png';
-// import tileback from '../img/tileback.png';
-
 class Tile extends React.Component {
     constructor(props) {
         super(props);
         this.handleTileClick = this.handleTileClick.bind(this);
         this.tileValue = props.tileValue;
-        this.image_url = '../img/tileback.png';
+        this.image_url = `/img-public/tileback.png`;
         this.image_alt = `Tile ${props.tileId}`;
         this.key = props.tileId;
         this.tileId = props.tileId;
@@ -17,12 +14,11 @@ class Tile extends React.Component {
 
     handleTileClick() {
         this.setState({ faceup: true });
-        this.image_url = `../img/tile${this.tileValue}.png`;
+        this.image_url = `/img-public/tileFaces/tile${this.tileValue}.png`;
         this.image_alt = `Image ${this.tileValue}`;
     }
     
     render() {
-        console.log("Tile render this.props.tileId",this.props.tileId);
     return (
         <div className="tile" onClick={this.handleTileClick}>
             <h2>A Tile</h2>
