@@ -10,14 +10,22 @@ class Main extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = {difficulty: 4};
+        this.state = {
+            difficulty: 4,
+            currentTile: 0,
+            numClicked: 0,
+            reset: false
+        };
+        // tilesArray might need to be state since it gets edited
         this.tilesArray = this.createTilesArray(this.state.difficulty);
+        this.handleBoardClick = this.handleBoardClick.bind(this);
+        this.handleMatchFound = this.handleMatchFound.bind(this);
+        this.handleResetClick = this.handleResetClick.bind(this);
     }
 
     handleSelect(event) {
         this.createTilesArray(event.target.value);
         this.setState({difficulty: event.target.value});
-        // console.log(this.state.difficulty);
     }
     
     createTilesArray(difficulty) {
@@ -41,27 +49,53 @@ class Main extends React.Component {
             let holdingVal = tilesArray[i];
             tilesArray[i] = {_id: i, value: holdingVal};
         }
-        // console.log("Main createTilesArray tilesArray",tilesArray);
         this.tilesArray = tilesArray;
-        // console.log("Main createTilesArray this.tilesArray",this.tilesArray);
         return this.tilesArray;
     }
 
-    handleTileClick() {
-        this.setState({ faceup: true });
-        this.image_url = `/img-public/tileFaces/tile${this.tileValue}.png`;
-        this.image_alt = `Image ${this.tileValue}`;
+    handleBoardClick(value) {
+        // - if Main's state.currentTile is 0, it should be set to the tile's value
+        // - if Main's state.currentTile is not 0, compare it to the tile's value
+        // - Main's state.numClicked should increment by 1
+        if(this.state.currentTile === 0) {
+            this.setState({ currentTile: value });
+        } else {
+            if(this.state.currentTile === value) {
+                this.handleMatchFound(value);
+            } else this.setState({ reset: true });
+        }
+        let clicks = this.state.numClicked + 1;
+        this.setState({ numClicked: clicks });
+    }
+
+    handleMatchFound(value) {
+        // How to remove tiles from the board when a match is found
+        // could I edit tilesArray to make the value of each selected tile negative or something, and any tiles with that ID have no image (or a placeholder image) and no on-click?
+        // pass in the tile's value, then iterate through the array and change the value of both matching tiles
+        // then I could just re-render all the tiles and they'd stay in order because it would be the same array
+        this.tilesArray.array.forEach(el => {
+            if(el.value === value) {
+                el.value = -1;
+            }
+        });
+        return this.tilesArray;
     }
 
     handleResetClick() {
-        // when the value of the second tile clicked does not match the value of the first tile clicked, bind this to TileBoard onClick
+        // when this.state.reset is true, bind this to the whole tile board onClick
         // it should update only the two faceup tiles so their image becomes the back image and their state resets to faceup = false
+        // if I can edit tilesArray in handleMatchFound, I can just have the tiles re-render every time, since it'll be using the same tilesArray
+        if(this.state.reset) {
+            // re-render the tiles using tilesArray
+            this.setState({ reset: false });
+        }
     }
 
     render() {
         return(
             <main>
                 <h2>Main</h2>
+                <p>Tiles clicked: {this.state.numClicked}</p>
                 <Form>
                 <Form.Group>
                   <Form.Label>Choose difficulty level:</Form.Label>
@@ -74,7 +108,8 @@ class Main extends React.Component {
                 </Form.Group>
                 <input type="submit" value="Submit" />
               </Form>
-              {this.tilesArray.map(el => <Tile key={el._id} tileId={el._id} tileValue={el.value} handleTileClick={this.handleTileClick}/>)}
+              <div className="tileBoard" onClick={this.handleResetClick}></div>
+              {this.tilesArray.map(el => <Tile key={el._id} tileId={el._id} tileValue={el.value} handleBoardClick={this.handleBoardClick}/>)}
               <ScoreBoard />
             </main>
         )
