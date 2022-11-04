@@ -47,14 +47,18 @@ class Main extends React.Component {
         return this.tilesArray;
     }
 
+    handleTileClick() {
+        this.setState({ faceup: true });
+        this.image_url = `/img-public/tileFaces/tile${this.tileValue}.png`;
+        this.image_alt = `Image ${this.tileValue}`;
+    }
+
     handleResetClick() {
         // when the value of the second tile clicked does not match the value of the first tile clicked, bind this to TileBoard onClick
         // it should update only the two faceup tiles so their image becomes the back image and their state resets to faceup = false
     }
 
     render() {
-        console.log("Main render tilesArray",this.tilesArray)
-        console.log("Main render this.state.difficulty",this.state.difficulty)
         return(
             <main>
                 <h2>Main</h2>
@@ -70,7 +74,7 @@ class Main extends React.Component {
                 </Form.Group>
                 <input type="submit" value="Submit" />
               </Form>
-              {this.tilesArray.map(el => <Tile key={el._id} tileId={el._id} tileValue={el.value} />)}
+              {this.tilesArray.map(el => <Tile key={el._id} tileId={el._id} tileValue={el.value} handleTileClick={this.handleTileClick}/>)}
               <ScoreBoard />
             </main>
         )
