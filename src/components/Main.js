@@ -11,10 +11,11 @@ class Main extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            difficulty: 4,
+            difficulty: 2,
             currentTile: 0,
             numClicked: 0,
-            reset: false
+            reset: false, 
+            gameStarted: false
         };
         // tilesArray might need to be state since it gets edited
         this.tilesArray = this.createTilesArray(this.state.difficulty);
@@ -31,6 +32,7 @@ class Main extends React.Component {
     handleSubmit(event) {
         event.preventDefault();
         this.createTilesArray(this.state.difficulty);
+        this.setState({gameStarted: true});
         console.log("Main handleSubmit tilesArray",this.tilesArray);
     }
     
@@ -56,13 +58,11 @@ class Main extends React.Component {
             tilesArray[i] = {_id: i, value: holdingVal};
         }
         this.tilesArray = tilesArray;
+        console.log("tilesArray",tilesArray);
         return this.tilesArray;
     }
 
     handleBoardClick(value) {
-        // - if Main's state.currentTile is 0, it should be set to the tile's value
-        // - if Main's state.currentTile is not 0, compare it to the tile's value
-        // - Main's state.numClicked should increment by 1
         this.setState({ numClicked: this.state.numClicked + 1 });
         if(this.state.currentTile === 0) {
             this.setState({ currentTile: value });
@@ -83,6 +83,7 @@ class Main extends React.Component {
                 el.value = -1;
             }
         });
+        console.log("Main handleMatchFound tilesArray", this.tilesArray);
         return this.tilesArray;
     }
 
@@ -114,8 +115,9 @@ class Main extends React.Component {
                 </Form.Group>
                 <input type="submit" value="Submit" />
               </Form>
-              <div className="tileBoard" onClick={this.handleResetClick}></div>
-              {this.tilesArray.map(el => <Tile key={el._id} tileId={el._id} tileValue={el.value} handleBoardClick={this.handleBoardClick} difficulty={this.state.difficulty}/>)}
+              <div className="tileBoard" onClick={this.handleResetClick}>
+                {this.tilesArray.map(el => <Tile key={el._id} tileId={el._id} tileValue={el.value} handleBoardClick={this.handleBoardClick} gameStarted={this.state.gameStarted}/>)}
+              </div>
               <ScoreBoard />
             </main>
         )

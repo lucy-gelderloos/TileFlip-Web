@@ -10,7 +10,11 @@ class Tile extends React.Component {
         this.image_alt = `Tile ${props.tileId}`;
         this.key = props.tileId;
         this.tileId = props.tileId;
-        this.state = {faceup: false, matchFound: false};
+        this.state = {
+            gameStarted: false, 
+            matchFound: false
+        };
+        // this.gameStarted = props.gameStarted;
     }
     
     handleTileClick() {
@@ -18,7 +22,7 @@ class Tile extends React.Component {
         this.image_alt = `Image ${this.tileValue}`;
         this.handleBoardClick(this.tileValue);
     }
-
+    
     render() {
     return (
         <div className="tile" onClick={this.handleTileClick}>
