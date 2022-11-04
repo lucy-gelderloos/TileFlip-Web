@@ -17,12 +17,17 @@ class TileBoard extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            firstTileValue: 0,
-            tilesClicked: 0
-        }
-        this.difficulty = props.difficulty;
-        this.handleResetClick = this.handleResetClick.bind(this);
+            difficulty: props.difficulty,
+            currentTile: 0,
+            numClicked: 0,
+            reset: false, 
+            gameStarted: false
+        };
+        // this.difficulty = props.difficulty;
         this.tilesArray = this.createTilesArray(props.difficulty);
+        this.allTilesClick = this.allTilesClick.bind(this);
+        this.handleMatchFound = this.handleMatchFound.bind(this);
+        this.handleResetClick = this.handleResetClick.bind(this);
     }
 
     createTilesArray(difficulty) {
@@ -46,12 +51,44 @@ class TileBoard extends React.Component {
             let holdingVal = tilesArray[i];
             tilesArray[i] = {_id: i, value: holdingVal};
         }
-        // console.log("Main createTilesArray tilesArray",tilesArray);
         this.tilesArray = tilesArray;
-        // console.log("Main createTilesArray this.tilesArray",this.tilesArray);
         return this.tilesArray;
     }
 
+    allTilesClick(value) {
+        this.setState({ numClicked: this.state.numClicked + 1 });
+        if(this.state.currentTile === 0) {
+            this.setState({ currentTile: value });
+        } else {
+            if(this.state.currentTile === value) {
+                this.handleMatchFound(value);
+            } else this.setState({ reset: true, currentTile: 0, numClicked: 0 });
+        }
+    }
+
+    handleMatchFound(value) {
+        // How to remove tiles from the board when a match is found
+        // could I edit tilesArray to make the value of each selected tile negative or something, and any tiles with that ID have no image (or a placeholder image) and no on-click?
+        // pass in the tile's value, then iterate through the array and change the value of both matching tiles
+        // then I could just re-render all the tiles and they'd stay in order because it would be the same array
+        this.tilesArray.forEach(el => {
+            if(el.value === value) {
+                el.value = - 1;
+            }
+        });
+        this.setState({reset: true});
+        return this.tilesArray;
+    }
+
+    handleResetClick() {
+        // when this.state.reset is true, bind this to the whole tile board onClick
+        // it should update only the two faceup tiles so their image becomes the back image and their state resets to faceup = false
+        // if I can edit tilesArray in handleMatchFound, I can just have the tiles re-render every time, since it'll be using the same tilesArray
+        if(this.state.reset) {
+            // re-render the tiles using tilesArray
+            this.setState({ currentTile: 0, numClicked: 0, reset: false });
+        }
+    }
     
     // TODO: tileboard has columns equal to difficulty level
     render() {
@@ -59,10 +96,10 @@ class TileBoard extends React.Component {
         // console.log("TileBoard render this.state.difficulty",this.state.difficulty)
         return(
             <div className="tileBoard">
-                <div>
-                    <h2>Tileboard goes here</h2>
-                    {this.tilesArray.map(el => <Tile key={el._id} tileId={el._id} tileValue={el.value} />)}
-                </div>
+                <h2>Tileboard goes here</h2>
+                <p>Tiles clicked: {this.state.numClicked}</p>
+                <p>Current tile: {this.state.currentTile}</p>
+                {this.tilesArray.map(el => <Tile key={el._id} tileId={el._id} tileValue={el.value} allTilesClick={this.allTilesClick} />)}
             </div>
         )
     }

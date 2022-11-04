@@ -1,8 +1,8 @@
 import React from "react";
 import Form from 'react-bootstrap/Form';
 
-// import TileBoard from './TileBoard.js';
-import Tile from './Tile.js';
+import TileBoard from './TileBoard.js';
+// import Tile from './Tile.js';
 import ScoreBoard from './ScoreBoard.js';
 
 class Main extends React.Component {
@@ -11,16 +11,8 @@ class Main extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            difficulty: 2,
-            currentTile: 0,
-            numClicked: 0,
-            reset: false, 
-            gameStarted: false
+            difficulty: 4
         };
-        this.tilesArray = this.createTilesArray(this.state.difficulty);
-        this.allTilesClick = this.allTilesClick.bind(this);
-        this.handleMatchFound = this.handleMatchFound.bind(this);
-        this.handleResetClick = this.handleResetClick.bind(this);
     }
 
     handleSelect(event) {
@@ -34,73 +26,11 @@ class Main extends React.Component {
         this.setState({ reset: true });
         console.log("Main handleSubmit tilesArray",this.tilesArray);
     }
-    
-    createTilesArray(difficulty) {
-        let tilesArray = [], k = 0;
-        for(let i = 1; i <= Math.pow(difficulty,2) / 2; i++) {
-            tilesArray[k] = i;
-            k++;
-            tilesArray[k] = i;
-            k++;
-        }
-        // https://bost.ocks.org/mike/shuffle/
-        let len = tilesArray.length, j, t;
-        while(len) {
-            j = Math.floor(Math.random() * len--);
-            t = tilesArray[len];
-            tilesArray[len] = tilesArray[j];
-            tilesArray[j] = t;
-        }
-        
-        for(let i = 0; i < tilesArray.length; i++) {
-            let holdingVal = tilesArray[i];
-            tilesArray[i] = {_id: i, value: holdingVal};
-        }
-        this.tilesArray = tilesArray;
-        return this.tilesArray;
-    }
-
-    allTilesClick(value) {
-        this.setState({ numClicked: this.state.numClicked + 1 });
-        if(this.state.currentTile === 0) {
-            this.setState({ currentTile: value });
-        } else {
-            if(this.state.currentTile === value) {
-                this.handleMatchFound(value);
-            } else this.setState({ reset: true, currentTile: 0, numClicked: 0 });
-        }
-    }
-
-    handleMatchFound(value) {
-        // How to remove tiles from the board when a match is found
-        // could I edit tilesArray to make the value of each selected tile negative or something, and any tiles with that ID have no image (or a placeholder image) and no on-click?
-        // pass in the tile's value, then iterate through the array and change the value of both matching tiles
-        // then I could just re-render all the tiles and they'd stay in order because it would be the same array
-        this.tilesArray.forEach(el => {
-            if(el.value === value) {
-                el.value = - 1;
-            }
-        });
-        this.setState({reset: true});
-        return this.tilesArray;
-    }
-
-    handleResetClick() {
-        // when this.state.reset is true, bind this to the whole tile board onClick
-        // it should update only the two faceup tiles so their image becomes the back image and their state resets to faceup = false
-        // if I can edit tilesArray in handleMatchFound, I can just have the tiles re-render every time, since it'll be using the same tilesArray
-        if(this.state.reset) {
-            // re-render the tiles using tilesArray
-            this.setState({ currentTile: 0, numClicked: 0, reset: false });
-        }
-    }
 
     render() {
         return(
             <main>
                 <h2>Main</h2>
-                <p>Tiles clicked: {this.state.numClicked}</p>
-                <p>Current tile: {this.state.currentTile}</p>
                 <Form onSubmit={this.handleSubmit.bind(this)}>
                 <Form.Group>
                   <Form.Label>Choose difficulty level:</Form.Label>
@@ -113,9 +43,7 @@ class Main extends React.Component {
                 </Form.Group>
                 <input type="submit" value="Submit" />
               </Form>
-              <div className="tileBoard" onClick={this.handleResetClick}>
-                {this.tilesArray.map(el => <Tile key={el._id} tileId={el._id} tileValue={el.value} allTilesClick={this.allTilesClick} />)}
-              </div>
+              <TileBoard difficulty={this.state.difficulty} />
               <ScoreBoard />
             </main>
         )
