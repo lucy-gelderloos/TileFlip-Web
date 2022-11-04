@@ -17,14 +17,13 @@ class TileBoard extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            difficulty: props.difficulty,
             currentTile: 0,
             numClicked: 0,
             reset: false, 
             gameStarted: false
         };
-        // this.difficulty = props.difficulty;
-        this.tilesArray = this.createTilesArray(props.difficulty);
+        this.difficulty = props.difficulty;
+        this.tilesArray = this.createTilesArray(this.props.difficulty);
         this.allTilesClick = this.allTilesClick.bind(this);
         this.handleMatchFound = this.handleMatchFound.bind(this);
         this.handleResetClick = this.handleResetClick.bind(this);
@@ -93,7 +92,7 @@ class TileBoard extends React.Component {
     // TODO: tileboard has columns equal to difficulty level
     render() {
         console.log("TileBoard render tilesArray",this.tilesArray)
-        // console.log("TileBoard render this.state.difficulty",this.state.difficulty)
+        console.log("TileBoard render this.props.difficulty",this.props.difficulty)
         return(
             <div className="tileBoard">
                 <h2>Tileboard goes here</h2>
