@@ -21,7 +21,7 @@ class Tile extends React.Component {
     render() {
     return (
         <div className="tile" onClick={this.handleTileClick}>
-            <h2>A Tile</h2>
+            <h2>Tile {this.tileId}</h2>
             <img src={this.image_url} alt={this.image_alt} />
         </div>
         );

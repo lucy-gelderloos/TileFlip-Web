@@ -16,13 +16,14 @@ import Tile from "./Tile";
 class TileBoard extends React.Component {
     constructor(props) {
         super(props);
-        this.difficulty = props.difficulty;
+        // this.difficulty = props.difficulty;
         this.state = {
+            difficulty: props.difficulty,
             firstTileValue: 0,
             tilesClicked: 0
         }
         this.handleResetClick = this.handleResetClick.bind(this);
-        this.tilesArray = this.createTilesArray();
+        this.tilesArray = props.tilesArray;
     }
 
     handleResetClick() {
@@ -30,34 +31,11 @@ class TileBoard extends React.Component {
         // it should update only the two faceup tiles so their image becomes the back image and their state resets to faceup = false
     }
 
-    createTilesArray() {
-        let tilesArray = [], k = 0;
-        for(let i = 1; i <= Math.pow(this.difficulty,2) / 2; i++) {
-            tilesArray[k] = i;
-            k++;
-            tilesArray[k] = i;
-            k++;
-        }
-        // https://bost.ocks.org/mike/shuffle/
-        let len = tilesArray.length, j, t;
-        while(len) {
-            j = Math.floor(Math.random() * len--);
-            t = tilesArray[len];
-            tilesArray[len] = tilesArray[j];
-            tilesArray[j] = t;
-        }
-        
-        for(let i = 0; i < tilesArray.length; i++) {
-            let holdingVal = tilesArray[i];
-            tilesArray[i] = {_id: i, value: holdingVal};
-        }
-
-        console.log(tilesArray);
-        return tilesArray;
-    }
-
+    
     // TODO: tileboard has columns equal to difficulty level
     render() {
+        console.log("TileBoard render tilesArray",this.tilesArray)
+        console.log("TileBoard render this.state.difficulty",this.state.difficulty)
         return(
             <div className="tileBoard">
                 <div>
