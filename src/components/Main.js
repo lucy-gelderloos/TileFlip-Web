@@ -17,9 +17,8 @@ class Main extends React.Component {
             reset: false, 
             gameStarted: false
         };
-        // tilesArray might need to be state since it gets edited
         this.tilesArray = this.createTilesArray(this.state.difficulty);
-        this.handleBoardClick = this.handleBoardClick.bind(this);
+        this.allTilesClick = this.allTilesClick.bind(this);
         this.handleMatchFound = this.handleMatchFound.bind(this);
         this.handleResetClick = this.handleResetClick.bind(this);
     }
@@ -32,7 +31,7 @@ class Main extends React.Component {
     handleSubmit(event) {
         event.preventDefault();
         this.createTilesArray(this.state.difficulty);
-        this.setState({gameStarted: true});
+        this.setState({ reset: true });
         console.log("Main handleSubmit tilesArray",this.tilesArray);
     }
     
@@ -58,11 +57,10 @@ class Main extends React.Component {
             tilesArray[i] = {_id: i, value: holdingVal};
         }
         this.tilesArray = tilesArray;
-        console.log("tilesArray",tilesArray);
         return this.tilesArray;
     }
 
-    handleBoardClick(value) {
+    allTilesClick(value) {
         this.setState({ numClicked: this.state.numClicked + 1 });
         if(this.state.currentTile === 0) {
             this.setState({ currentTile: value });
@@ -80,10 +78,10 @@ class Main extends React.Component {
         // then I could just re-render all the tiles and they'd stay in order because it would be the same array
         this.tilesArray.forEach(el => {
             if(el.value === value) {
-                el.value = -1;
+                el.value = - 1;
             }
         });
-        console.log("Main handleMatchFound tilesArray", this.tilesArray);
+        this.setState({reset: true});
         return this.tilesArray;
     }
 
@@ -116,7 +114,7 @@ class Main extends React.Component {
                 <input type="submit" value="Submit" />
               </Form>
               <div className="tileBoard" onClick={this.handleResetClick}>
-                {this.tilesArray.map(el => <Tile key={el._id} tileId={el._id} tileValue={el.value} handleBoardClick={this.handleBoardClick} gameStarted={this.state.gameStarted}/>)}
+                {this.tilesArray.map(el => <Tile key={el._id} tileId={el._id} tileValue={el.value} allTilesClick={this.allTilesClick} />)}
               </div>
               <ScoreBoard />
             </main>

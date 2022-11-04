@@ -3,7 +3,7 @@ import React from "react";
 class Tile extends React.Component {
     constructor(props) {
         super(props);
-        this.handleBoardClick = props.handleBoardClick;
+        this.allTilesClick = props.allTilesClick;
         this.handleTileClick = this.handleTileClick.bind(this);
         this.tileValue = props.tileValue;
         this.image_url = `/img-public/tileback.png`;
@@ -11,7 +11,7 @@ class Tile extends React.Component {
         this.key = props.tileId;
         this.tileId = props.tileId;
         this.state = {
-            gameStarted: false, 
+            gameStarted: false,
             matchFound: false
         };
         // this.gameStarted = props.gameStarted;
@@ -20,9 +20,9 @@ class Tile extends React.Component {
     handleTileClick() {
         this.image_url = `/img-public/tileFaces/tile${this.tileValue}.png`;
         this.image_alt = `Image ${this.tileValue}`;
-        this.handleBoardClick(this.tileValue);
+        this.allTilesClick(this.tileValue);
     }
-    
+
     render() {
     return (
         <div className="tile" onClick={this.handleTileClick}>
