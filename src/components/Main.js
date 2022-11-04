@@ -24,8 +24,14 @@ class Main extends React.Component {
     }
 
     handleSelect(event) {
-        this.createTilesArray(event.target.value);
         this.setState({difficulty: event.target.value});
+        console.log("Main handleSelect this.state.difficulty",this.state.difficulty);    
+    }
+
+    handleSubmit(event) {
+        event.preventDefault();
+        this.createTilesArray(this.state.difficulty);
+        console.log("Main handleSubmit tilesArray",this.tilesArray);
     }
     
     createTilesArray(difficulty) {
@@ -57,15 +63,14 @@ class Main extends React.Component {
         // - if Main's state.currentTile is 0, it should be set to the tile's value
         // - if Main's state.currentTile is not 0, compare it to the tile's value
         // - Main's state.numClicked should increment by 1
+        this.setState({ numClicked: this.state.numClicked + 1 });
         if(this.state.currentTile === 0) {
             this.setState({ currentTile: value });
         } else {
             if(this.state.currentTile === value) {
                 this.handleMatchFound(value);
-            } else this.setState({ reset: true });
+            } else this.setState({ reset: true, currentTile: 0, numClicked: 0 });
         }
-        let clicks = this.state.numClicked + 1;
-        this.setState({ numClicked: clicks });
     }
 
     handleMatchFound(value) {
@@ -73,7 +78,7 @@ class Main extends React.Component {
         // could I edit tilesArray to make the value of each selected tile negative or something, and any tiles with that ID have no image (or a placeholder image) and no on-click?
         // pass in the tile's value, then iterate through the array and change the value of both matching tiles
         // then I could just re-render all the tiles and they'd stay in order because it would be the same array
-        this.tilesArray.array.forEach(el => {
+        this.tilesArray.forEach(el => {
             if(el.value === value) {
                 el.value = -1;
             }
@@ -87,7 +92,7 @@ class Main extends React.Component {
         // if I can edit tilesArray in handleMatchFound, I can just have the tiles re-render every time, since it'll be using the same tilesArray
         if(this.state.reset) {
             // re-render the tiles using tilesArray
-            this.setState({ reset: false });
+            this.setState({ currentTile: 0, numClicked: 0, reset: false });
         }
     }
 
@@ -96,7 +101,8 @@ class Main extends React.Component {
             <main>
                 <h2>Main</h2>
                 <p>Tiles clicked: {this.state.numClicked}</p>
-                <Form>
+                <p>Current tile: {this.state.currentTile}</p>
+                <Form onSubmit={this.handleSubmit.bind(this)}>
                 <Form.Group>
                   <Form.Label>Choose difficulty level:</Form.Label>
                   <Form.Select onChange={this.handleSelect.bind(this)}>      
@@ -109,7 +115,7 @@ class Main extends React.Component {
                 <input type="submit" value="Submit" />
               </Form>
               <div className="tileBoard" onClick={this.handleResetClick}></div>
-              {this.tilesArray.map(el => <Tile key={el._id} tileId={el._id} tileValue={el.value} handleBoardClick={this.handleBoardClick}/>)}
+              {this.tilesArray.map(el => <Tile key={el._id} tileId={el._id} tileValue={el.value} handleBoardClick={this.handleBoardClick} difficulty={this.state.difficulty}/>)}
               <ScoreBoard />
             </main>
         )
