@@ -11,6 +11,8 @@
 // Reset firstTileValue and tilesClicked
 
 import React from "react";
+import Form from 'react-bootstrap/Form';
+
 import Tile from "./Tile";
 
 class TileBoard extends React.Component {
@@ -20,13 +22,22 @@ class TileBoard extends React.Component {
             currentTile: 0,
             numClicked: 0,
             reset: false, 
-            gameStarted: false
+            gameStarted: false,
+            tilesArray: this.createTilesArray(this.props.difficulty)
         };
-        this.difficulty = props.difficulty;
-        this.tilesArray = this.createTilesArray(this.props.difficulty);
+        // this.difficulty = props.difficulty;
+        // this.tilesArray = this.createTilesArray(this.props.difficulty);
         this.allTilesClick = this.allTilesClick.bind(this);
         this.handleMatchFound = this.handleMatchFound.bind(this);
         this.handleResetClick = this.handleResetClick.bind(this);
+    }
+
+    handleSubmit(event) {
+        event.preventDefault();
+        this.createTilesArray(this.props.difficulty);
+        // this.setState({ reset: true });
+        console.log("TileBoard handleSubmit tilesArray",this.tilesArray);
+        console.log("TileBoard handleSubmit this.state.difficulty",this.state.difficulty);
     }
 
     createTilesArray(difficulty) {
@@ -93,9 +104,13 @@ class TileBoard extends React.Component {
     render() {
         console.log("TileBoard render tilesArray",this.tilesArray)
         console.log("TileBoard render this.props.difficulty",this.props.difficulty)
+        console.log("TileBoard render this.state.difficulty",this.state.difficulty)
         return(
             <div className="tileBoard">
                 <h2>Tileboard goes here</h2>
+                <Form onSubmit={this.handleSubmit.bind(this)}>
+                    <input type="submit" value="New Game" />
+                </Form>
                 <p>Tiles clicked: {this.state.numClicked}</p>
                 <p>Current tile: {this.state.currentTile}</p>
                 {this.tilesArray.map(el => <Tile key={el._id} tileId={el._id} tileValue={el.value} allTilesClick={this.allTilesClick} />)}
