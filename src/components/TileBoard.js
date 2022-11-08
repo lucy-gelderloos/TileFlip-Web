@@ -21,12 +21,9 @@ class TileBoard extends React.Component {
         this.state = {
             currentTile: 0,
             numClicked: 0,
-            reset: false, 
-            gameStarted: false,
+            triesCounter: 0,
             tilesArray: this.createTilesArray(this.props.difficulty)
         };
-        // this.difficulty = props.difficulty;
-        // this.tilesArray = this.createTilesArray(this.props.difficulty);
         this.allTilesClick = this.allTilesClick.bind(this);
         this.handleMatchFound = this.handleMatchFound.bind(this);
         this.handleResetClick = this.handleResetClick.bind(this);
@@ -34,8 +31,7 @@ class TileBoard extends React.Component {
 
     handleSubmit(event) {
         event.preventDefault();
-        this.createTilesArray(this.props.difficulty);
-        // this.setState({ reset: true });
+        this.setState({ tilesArray: this.createTilesArray(this.props.difficulty)});
         console.log("TileBoard handleSubmit tilesArray",this.tilesArray);
         console.log("TileBoard handleSubmit this.state.difficulty",this.state.difficulty);
     }
@@ -61,8 +57,9 @@ class TileBoard extends React.Component {
             let holdingVal = tilesArray[i];
             tilesArray[i] = {_id: i, value: holdingVal};
         }
-        this.tilesArray = tilesArray;
-        return this.tilesArray;
+        // this.tilesArray = tilesArray;
+        // return this.tilesArray;
+        return tilesArray;
     }
 
     allTilesClick(value) {
@@ -70,9 +67,10 @@ class TileBoard extends React.Component {
         if(this.state.currentTile === 0) {
             this.setState({ currentTile: value });
         } else {
+            this.setState({ triesCounter: this.state.triesCounter + 1 })
             if(this.state.currentTile === value) {
                 this.handleMatchFound(value);
-            } else this.setState({ reset: true, currentTile: 0, numClicked: 0 });
+            } else this.setState({ currentTile: 0, numClicked: 0 });
         }
     }
 
@@ -102,9 +100,13 @@ class TileBoard extends React.Component {
     
     // TODO: tileboard has columns equal to difficulty level
     render() {
-        console.log("TileBoard render tilesArray",this.tilesArray)
+        console.log("TileBoard render this.state.tilesArray",this.state.tilesArray)
         console.log("TileBoard render this.props.difficulty",this.props.difficulty)
-        console.log("TileBoard render this.state.difficulty",this.state.difficulty)
+        // let tilesArray;
+        // if(this.state.tilesArray) {
+        //     tilesArray = this.state.tilesArray;
+        // } else tilesArray = [];
+
         return(
             <div className="tileBoard">
                 <h2>Tileboard goes here</h2>
@@ -113,7 +115,8 @@ class TileBoard extends React.Component {
                 </Form>
                 <p>Tiles clicked: {this.state.numClicked}</p>
                 <p>Current tile: {this.state.currentTile}</p>
-                {this.tilesArray.map(el => <Tile key={el._id} tileId={el._id} tileValue={el.value} allTilesClick={this.allTilesClick} />)}
+                
+                {this.state.tilesArray.map(el => <Tile key={el._id} tileId={el._id} tileValue={el.value} allTilesClick={this.allTilesClick} triesCounter={this.state.triesCounter} />)}
             </div>
         )
     }
