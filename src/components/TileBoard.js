@@ -10,6 +10,7 @@
 // when matches are found, change the state of each tile to matchFound, then pass the tiles' image value to the DiscardPile component so it can display the most recent discard face up.
 // Reset firstTileValue and tilesClicked
 
+import { Button } from "bootstrap";
 import React from "react";
 import Form from 'react-bootstrap/Form';
 
@@ -115,8 +116,10 @@ class TileBoard extends React.Component {
                 </Form>
                 <p>Tiles clicked: {this.state.numClicked}</p>
                 <p>Current tile: {this.state.currentTile}</p>
+                {this.state.tilesArray.map(el => {<img key={el._id} id={el._id} className={el.value} onClick={this.allTilesClick} src={`/img-public/tileFaces/tile${el.value}.png`} alt={`Tile ${el.value}`} />})}
+
                 
-                {this.state.tilesArray.map(el => <Tile key={el._id} tileId={el._id} tileValue={el.value} allTilesClick={this.allTilesClick} triesCounter={this.state.triesCounter} />)}
+                {/* {this.state.tilesArray.map(el => <Tile key={el._id} tileId={el._id} tileValue={el.value} allTilesClick={this.allTilesClick} triesCounter={this.state.triesCounter} />)} */}
             </div>
         )
     }
